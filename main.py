@@ -1,4 +1,7 @@
+
 import telebot
+from requests.exceptions import MissingSchema
+
 from _token import token
 from telebot import types
 from requesters import key_list, get_code
@@ -11,10 +14,6 @@ def start_func(message):
     key_func(message)
 
 
-def get_name(message):
-    return message.from_user.username
-
-
 @bot.callback_query_handler(func=lambda call: True)
 def answer(call):
     if call.data == 'code':
@@ -25,7 +24,7 @@ def answer(call):
             try:
                 get_code(message.chat.id, message.text)
                 bot.send_message(message.chat.id, 'Код принят')
-            except Exception:
+            except MissingSchema:
                 bot.send_message(message.chat.id, "пароль говно")
 
     elif call.data == 'crypto':
