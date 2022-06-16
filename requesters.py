@@ -5,10 +5,12 @@ import json
 
 
 def get_code(username, password):
-    print(username, password)
     get_code = requests.get(f'/api/0.1/keys/pass/get/{password}/{username} HTTP/1.1')
-    print(get_code.content)
+    return get_code.content
 
+def buy_key(productUUID, telegramUserID):
+    key = requests.get(f'GET /api/0.1/keys/buy/{productUUID}/{telegramUserID} HTTP/1.1')
+    return key.content
 
 
 
