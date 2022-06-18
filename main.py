@@ -2,13 +2,14 @@ import telebot
 from _token import token
 from telebot import types
 
-from admin import admin_init, admin_list, admin_keyup
+from admin import admin_init, admin_list, admin_keyup, add_admin
 from buttons import product_buttons, button_creator
 from requesters import get_code, buy_key, key_list
 
 bot = telebot.TeleBot(token=token)
 uuid = None
 admin = False
+
 
 @bot.message_handler(commands=['admin'])
 def call_admin_start(message):
@@ -19,12 +20,28 @@ def call_admin_start(message):
     else:
         bot.send_message(message.chat.id, 'Ты не одмен сука')
 
+
 @bot.message_handler(commands=['start'])
 def key_func(message):
     markup_inline = product_buttons(admin=False)
     code = button_creator('code', 'По коду')
     markup_inline.add(code)
     bot.send_message(message.chat.id, 'Выберите ключ', reply_markup=markup_inline)
+
+
+@bot.message_handler(commands=['add_adm'])
+def add_adm(message):
+    if admin_list(message.chat.id):
+        msg = bot.send_message(message.chat.id, 'введите id')
+        bot.register_next_step_handler(msg, add_adm_2)
+    else:
+        bot.send_message(message.chat.id, 'харе неабывать не одмен ты сука')
+
+
+def add_adm_2(message):
+    add_admin(message.text)
+    msg = bot.send_message(message.chat.id, f"Теперь {message.chat.username} одмен")
+    bot.register_next_step_handler(msg, admin_init(message))
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -84,7 +101,6 @@ def callback_list_taker(switch=False):
         for directory in key_list:
             callback_list.append(directory['uuid'])
         return callback_list
-
 
 
 bot.infinity_polling()
