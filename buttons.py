@@ -5,12 +5,13 @@ from requesters import key_list
 data_callback_list = []
 admin_callback_list = []
 
+
 def button_creator(callback, text):
     button = types.InlineKeyboardButton(text=text, callback_data=callback)
     return button
 
 
-def product_buttons():
+def product_buttons(admin=False):
     markup_inline = types.InlineKeyboardMarkup()
     count = 1
     button1 = None
